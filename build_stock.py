@@ -45,12 +45,14 @@ class BuildStock:
 
 
     def write_items_in_stock_master_file1(self, items):
-        stock_master_item_value = self.get_stock_list_from_stock_master_file()
+
 
         sheet = self.stock_master_workbook.active
         sheet.title = "재고리스트"
         sheet.cell(row=1, column=1, value="판매품명")
         sheet.cell(row=1, column=2, value="재고개수")
+        stock_master_item_value = self.get_stock_list_from_stock_master_file()
+
         for i, item_name in enumerate(items.keys()):
             if item_name not in stock_master_item_value:
                 print(item_name)
