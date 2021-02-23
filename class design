@@ -1,0 +1,14 @@
+
+
+
+class
+    build_stock
+        build_stock
+        stock_master_file
+        transaction_file
+
+
+
+wookbook에서 name:option 추출
+row 하나씩 로드해서 해당 컬럼 name:option만 추출 해서 dict로 리턴
+
