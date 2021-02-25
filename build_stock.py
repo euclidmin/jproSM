@@ -1,5 +1,8 @@
 import openpyxl
 import sys
+from datetime import datetime
+import os
+
 
 
 def funcname():
@@ -16,6 +19,7 @@ class BuildStock:
 
         self.name_option_cells = None
         self.name_option_dict = {}
+        self.stock_master_sheet_max_cnt = 0
         print(funcname())
 
     def load_workbook(self):
@@ -23,48 +27,55 @@ class BuildStock:
 
         def _open_transaction_file():
             print(funcname())
-            return openpyxl.load_workbook('스마트스토어_주문조회_20210102_1027.xlsx')
+            return openpyxl.load_workbook('스마트스토어_주문조회_20210225_1407.xlsx')
 
         def _open_stock_master_file():
             print(funcname())
-            return openpyxl.load_workbook('stock.xlsx')
+            if os.path.exists("JP_SM.xlsx") :
+                stock_excel_file_name = "JP_SM.xlsx"
+            else:
+                stock_excel_file_name = self.make_file_name()
+                wb = openpyxl.Workbook()
+                wb.save(stock_excel_file_name)
+            return openpyxl.load_workbook(stock_excel_file_name)
 
         self.stock_master_workbook = _open_stock_master_file()
         self.transaction_workbook = _open_transaction_file()
 
 
     def write_items_in_stock_master_file(self, items):
-        sheet = self.stock_master_workbook.active
-        sheet.title = "재고리스트"
-
-        for i, item_name in enumerate(items.keys()):
-            sheet.cell(row=i+1, column=1, value=item_name)
-            sheet.cell(row=i+1, column=2, value=items[item_name])
-
-        self.stock_master_workbook.save("stock.xlsx")
-
-
-    def write_items_in_stock_master_file1(self, items):
-
-
+        print(funcname())
         sheet = self.stock_master_workbook.active
         sheet.title = "재고리스트"
         sheet.cell(row=1, column=1, value="판매품명")
         sheet.cell(row=1, column=2, value="재고개수")
         stock_master_item_value = self.get_stock_list_from_stock_master_file()
 
-        for i, item_name in enumerate(items.keys()):
+        cnt = 0
+        for item_name in items.keys():
             if item_name not in stock_master_item_value:
                 print(item_name)
-                sheet.cell(row=i+2, column=1, value=item_name)
-                sheet.cell(row=i+2, column=2, value=items[item_name])
+                cnt += 1
+                row_cnt = self.stock_master_sheet_max_cnt + cnt
 
-        self.stock_master_workbook.save("stock.xlsx")
+                sheet.cell(row=row_cnt, column=1, value=item_name)
+                sheet.cell(row=row_cnt, column=2, value=items[item_name])
 
+        print(cnt)
+        stock_excel_file_name = self.make_file_name()
+        self.stock_master_workbook.save(stock_excel_file_name)
+
+    def make_file_name(self):
+        print(funcname())
+        now = datetime.now()
+        fname = 'JP_SM'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+str(now.minute)+str(now.second)+'.xlsx'
+        return fname
 
 
     def get_stock_list_from_transaction(self):
+        print(funcname())
         def get_name_and_option_cells_from_transaction():
+            print(funcname())
             transaction_worksheet = self.transaction_workbook['주문조회']
             max_cnt = transaction_worksheet.max_row
             ret = transaction_worksheet['G2':'H' + str(max_cnt)]
@@ -72,6 +83,7 @@ class BuildStock:
             return ret
 
         def make_name_and_option(cells):
+            print(funcname())
             name_option_dict = {}
             for index in range(0, len(cells)):
                 name = cells[index][0].value
@@ -80,6 +92,8 @@ class BuildStock:
                 # 재고 아이템별 중복 없이 dict에 초기값 0과 함께 저장
                 name_option_dict[name_option] = 0
                 # print(str(index) + ' ' + name_option)
+
+            print(len(name_option_dict))
             return name_option_dict
 
         cells = get_name_and_option_cells_from_transaction()
@@ -87,12 +101,14 @@ class BuildStock:
 
         return ret
 
+
     def get_stock_list_from_stock_master_file(self):
+        print(funcname())
         stock_master_file_worksheet = self.stock_master_workbook['재고리스트']
         max_cnt = stock_master_file_worksheet.max_row
+        self.stock_master_sheet_max_cnt = max_cnt
         cells = stock_master_file_worksheet['A2':'B' + str(max_cnt)]
         # print(ret)
-
         item_name_value_dict = {}
         for index in range(0, len(cells)):
             item_name = cells[index][0].value

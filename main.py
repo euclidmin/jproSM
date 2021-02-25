@@ -22,7 +22,7 @@ if __name__ == '__main__':
     bs = BuildStock()
     bs.load_workbook()
     name_option = bs.get_stock_list_from_transaction()
-    bs.write_items_in_stock_master_file1(name_option)
+    bs.write_items_in_stock_master_file(name_option)
 
     print(name_option)
 
