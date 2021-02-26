@@ -8,6 +8,12 @@ import os
 def funcname():
     return sys._getframe(1).f_code.co_name + "()"
 
+def make_file_name():
+    print(funcname())
+    now = datetime.now()
+    fname = 'JP_SM'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+str(now.minute)+str(now.second)+'.xlsx'
+    return fname
+
 
 class BuildStock:
     def __init__(self):
@@ -34,7 +40,7 @@ class BuildStock:
             if os.path.exists("JP_SM.xlsx") :
                 stock_excel_file_name = "JP_SM.xlsx"
             else:
-                stock_excel_file_name = self.make_file_name()
+                stock_excel_file_name = make_file_name()
                 wb = openpyxl.Workbook()
                 wb.save(stock_excel_file_name)
             return openpyxl.load_workbook(stock_excel_file_name)
@@ -65,11 +71,7 @@ class BuildStock:
         stock_excel_file_name = self.make_file_name()
         self.stock_master_workbook.save(stock_excel_file_name)
 
-    def make_file_name(self):
-        print(funcname())
-        now = datetime.now()
-        fname = 'JP_SM'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+str(now.minute)+str(now.second)+'.xlsx'
-        return fname
+
 
 
     def get_stock_list_from_transaction(self):
@@ -118,6 +120,59 @@ class BuildStock:
             # print(str(index) + ' ' + name_option)
         return item_name_value_dict
 
+
+
+
+
+class GoodsOut:
+    def __init__(self):
+        self.stock_master_workbook = None
+        self.transaction_workbook = None
+        self.stock_master_sheet = None
+        self.transaction_sheet = None
+
+
+    def load_workbook(self):
+        print(funcname())
+
+        def _open_transaction_file():
+            print(funcname())
+            return openpyxl.load_workbook('스마트스토어_주문조회_20210225_1407.xlsx')
+
+        def _open_stock_master_file():
+            print(funcname())
+            if os.path.exists("JP_SM.xlsx") :
+                stock_excel_file_name = "JP_SM.xlsx"
+            else:
+                print("JP_SM.xlsx 파일이 없습니다.")
+            return openpyxl.load_workbook(stock_excel_file_name)
+
+        self.stock_master_workbook = _open_stock_master_file()
+        self.transaction_workbook = _open_transaction_file()
+        self.stock_master_sheet = self.stock_master_workbook['재고리스트']
+        self.transaction_sheet = self.transaction_workbook['주문조회']
+
+
+    def filter_out(self):
+        max_cnt = self.transaction_sheet.max_row
+        sheet = self.transaction_sheet
+
+        del_list = []
+        for i in range(2, max_cnt):
+            state = sheet.cell(row=i, column=4).value
+            print(str(i)+' '+state)
+            if state == '취소':
+                del_list.append(i)
+        print(del_list)
+
+        for idx in del_list :
+            sheet.delete_rows(idx, amount=1)
+            print(idx)
+
+
+    def save(self):
+        file_name = make_file_name()
+        self.transaction_workbook.save(file_name)
 
 
 
