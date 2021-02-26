@@ -177,5 +177,32 @@ class GoodsOut:
 
 
 
+    def get_stock_list_from_transaction(self):
+        print(funcname())
+        def get_name_and_option_cnt_cells_from_transaction():
+            print(funcname())
+            transaction_worksheet = self.transaction_sheet
+            max_cnt = transaction_worksheet.max_row
+            ret = transaction_worksheet['D2':'I' + str(max_cnt)]
+            # print(ret)
+            return ret
 
+        def make_name_and_option(cells):
+            print(funcname())
+            name_option_dict = {}
+            for index in range(0, len(cells)):
+                name = cells[index][0].value
+                option = cells[index][1].value
+                name_option = name + ' | ' + option
+                # 재고 아이템별 중복 없이 dict에 초기값 0과 함께 저장
+                name_option_dict[name_option] = 0
+                # print(str(index) + ' ' + name_option)
+
+            print(len(name_option_dict))
+            return name_option_dict
+
+        cells = get_name_and_option_cnt_cells_from_transaction()
+        ret = make_name_and_option(cells)
+
+        return ret
 
