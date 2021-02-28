@@ -28,8 +28,10 @@ if __name__ == '__main__':
 
     go = GoodsOut()
     go.load_workbook()
-    go.filter_out()
-    go.save()
+    order_list = go.get_order_list_from_transaction()
+    go.update_stock_master_file(order_list)
+    # go.filter_out()
+    # go.save()
     
 
 
