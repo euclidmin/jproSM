@@ -11,14 +11,18 @@ def funcname():
 def make_file_name():
     print(funcname())
     now = datetime.now()
-    fname = 'JP_SM'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+str(now.minute)+str(now.second)+'.xlsx'
+    fname = 'JP_SM'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+'_'+str(now.minute)+'_'+str(now.second)+'.xlsx'
     return fname
 
 def make_title_name():
     print(funcname())
     now = datetime.now()
-    fname = '재고리스트'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+str(now.minute)+str(now.second)
+    fname = '재고리스트'+str(now.year)+'-'+str(now.month)+'-'+str(now.day)+'_'+str(now.hour)+'_'+str(now.minute)+'_'+str(now.second)
     return fname
+
+def date_compare(a, b):
+
+
 
 
 class BuildStock:
@@ -39,7 +43,7 @@ class BuildStock:
 
         def _open_transaction_file():
             print(funcname())
-            return openpyxl.load_workbook('스마트스토어_주문조회_20210301_0715.xlsx')
+            return openpyxl.load_workbook('스마트스토어_주문조회_20210102_1027.xlsx')
 
         def _open_stock_master_file():
             print(funcname())
@@ -143,7 +147,7 @@ class GoodsOut:
 
         def _open_transaction_file():
             print(funcname())
-            return openpyxl.load_workbook('스마트스토어_주문조회_20210301_0715.xlsx')
+            return openpyxl.load_workbook('스마트스토어_주문조회_20210301_0712.xlsx')
 
         def _open_stock_master_file():
             print(funcname())
@@ -157,30 +161,6 @@ class GoodsOut:
         self.transaction_workbook = _open_transaction_file()
         self.stock_master_sheet = self.stock_master_workbook['재고리스트']
         self.transaction_sheet = self.transaction_workbook['주문조회']
-
-
-    # def filter_out(self):
-    #     max_cnt = self.transaction_sheet.max_row
-    #     sheet = self.transaction_sheet
-    #
-    #     del_list = []
-    #     for i in range(2, max_cnt):
-    #         state = sheet.cell(row=i, column=4).value
-    #         print(str(i)+' '+state)
-    #         if state == '취소':
-    #             del_list.append(i)
-    #     print(del_list)
-    #
-    #     for idx in del_list :
-    #         sheet.delete_rows(idx, amount=1)
-    #         print(idx)
-
-    #
-    # def save(self):
-    #     file_name = make_file_name()
-    #     self.transaction_workbook.save(file_name)
-
-
 
 
     def get_order_list_from_transaction(self):

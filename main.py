@@ -19,20 +19,17 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # print_hi('PyCharm')
-    # bs = BuildStock()
-    # bs.load_workbook()
-    # name_option = bs.get_stock_list_from_transaction()
-    # bs.write_items_in_stock_master_file(name_option)
+    bs = BuildStock()
+    bs.load_workbook()
+    name_option = bs.get_stock_list_from_transaction()
+    bs.write_items_in_stock_master_file(name_option)
     # print(name_option)
     # ===============================================================
 
-    go = GoodsOut()
-    go.load_workbook()
-    order_list = go.get_order_list_from_transaction()
-    go.update_stock_master_file(order_list)
-    # go.filter_out()
-    # go.save()
-    
+    # go = GoodsOut()
+    # go.load_workbook()
+    # order_list = go.get_order_list_from_transaction()
+    # go.update_stock_master_file(order_list)
 
 
 
